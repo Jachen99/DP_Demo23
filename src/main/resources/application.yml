@@ -1,0 +1,48 @@
+spring:
+  task:
+    scheduling:
+      pool:
+        size: 5  # 设置线程池大小
+
+  data:
+    elasticsearch:
+      uris: http://localhost:9200
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/test_db?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=UTC
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  shardingsphere:
+    datasource:
+      names: ds0
+      ds0:
+        url: jdbc:mysql://localhost:3306/test_db?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=UTC
+        username: root
+        password: 123456
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        hikari:
+          minimum-idle: 5
+          maximum-pool-size: 20
+          idle-timeout: 30000  # 空闲连接超时时间
+          connection-timeout: 30000  # 连接超时时间
+          max-lifetime: 600000  # 连接最大生命周期
+          validation-timeout: 5000  # 校验连接的超时时间
+          leak-detection-threshold: 15000  # 如果连接被泄露，15秒后触发警告
+
+    sharding:
+      tables:
+        file_info:
+          actual-data-nodes: ds0.file_info_${0..10}  # 11 张分表
+          table-strategy:
+            inline:
+              sharding-column: user_id  # 分片字段为 user_id
+              algorithm-expression: file_info_${user_id % 11}  # 分片算法，按 user_id 取模
+
+mybatis-plus:
+  mapper-locations: classpath:/org/example/mapper/*.xml
+
+logging:
+  level:
+    org.mybatis: DEBUG
