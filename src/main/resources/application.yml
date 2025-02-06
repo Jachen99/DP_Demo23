@@ -1,4 +1,17 @@
 spring:
+  server:
+    port: 18001  # 自定义应用的端口号为 18001
+
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+#        namespace:
+      config:
+        server-addr: localhost:8848 # Nacos配置中心地址
+#        namespace:
+        file-extension: yaml # 配置文件类型，默认为properties，也可以是yaml
+
   task:
     scheduling:
       pool:
