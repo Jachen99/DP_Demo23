@@ -4,6 +4,13 @@ spring:
       pool:
         size: 5  # 设置线程池大小
 
+  feign:
+    client:
+      config:
+        default:
+          connectTimeout: 5000  # 连接超时时间，单位毫秒
+          readTimeout: 5000     # 读取超时时间，单位毫秒
+
   data:
     elasticsearch:
       uris: http://localhost:9200
@@ -38,7 +45,7 @@ spring:
           table-strategy:
             inline:
               sharding-column: user_id  # 分片字段为 user_id
-              algorithm-expression: file_info_${user_id % 11}  # 分片算法，按 user_id 取模
+              algorithm-expression: file_info_${user_id mod 11}  # 使用 mod 运算符
 
 mybatis-plus:
   mapper-locations: classpath:/org/example/mapper/*.xml
